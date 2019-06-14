@@ -8,8 +8,12 @@ const FolderSchema = new Schema({
     },
     bookmarks: [{
         type: Schema.Types.ObjectId,
-        ref: 'Book',
+        ref: 'Bookmark',
         // autopopulate: true
+    }],
+    childFolderId: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Folder'
     }]
 }, {
     timestamps: true

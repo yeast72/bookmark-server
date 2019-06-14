@@ -4,12 +4,14 @@ const router = express.Router()
 
 const bookmarkController = require('../controller/bookmark')
 
-router.get('/bookmarks', bookmarkController.getBooks)
+router.get('/bookmarks', bookmarkController.getBookmarks)
 
 router.get('/', bookmarkController.getFolders)
 
-router.post('/bookmark', bookmarkController.addBook)
+router.post('/bookmark', bookmarkController.createBookmark)
 
-router.delete('/bookmark/:bookId', bookmarkController.deleteBook)
+router.put('/bookmark/:bookmarkId', bookmarkController.updateBookmark)
+
+router.delete('/bookmark/:bookmarkId', bookmarkController.deleteBookmark)
 
 module.exports = router

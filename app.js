@@ -7,10 +7,11 @@ const app = express()
 
 const bookmarkRouter = require('./routes/bookmark')
 const authRouter = require('./routes/auth')
+const folderRouter = require('./routes/folder')
 
 const Folder = require('./model/folder')
 const User = require('./model/user')
-const Book = require('./model/book')
+const Book = require('./model/bookmark')
 
 
 // const user = new User({
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
 })
 
 app.use(bookmarkRouter);
+app.use(folderRouter)
 app.use('/auth', authRouter);
 
 app.use((error, req, res, next) => {

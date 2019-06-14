@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const bookSchema = new Schema({
+const bookmarkSchema = new Schema({
     title: {
         type: String,
         required: true
@@ -12,10 +12,16 @@ const bookSchema = new Schema({
     },
     completed: {
         type: Boolean,
-        required: true
+        required: false,
+        default: false
+    },
+    stared: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 }, {
     timestamps: true
 })
 
-module.exports = mongoose.model('Book', bookSchema)
+module.exports = mongoose.model('Bookmark', bookmarkSchema)
