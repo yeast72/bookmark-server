@@ -50,13 +50,37 @@ exports.getFolders = async (req, res, next) => {
             error.status = 404
             throw error
         }
-        let result = {}
-        folders.forEach(folder => {
-            result[folder._id] = folder;
-        })
         res.status(200).json({
             message: "Get folder successful",
-            folder: result
+            folders: folders
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500
+        }
+        next(err)
+    }
+}
+
+exports.getFolder = async (req, res, next) => {
+    const folderId = req.params.folderId
+    try {
+        if (folderId === 'root') {
+            const folder = await Folder.findById('5d0271c91f3acd1c80a2307e')
+            res.status(200).json({
+                message: "Get root folder successful",
+                folder: folder
+            })
+        }
+        const folder = await Folder.findById(folderId)
+        if (!folder) {
+            const error = new Error('Could not find folder')
+            error.status = 404
+            throw error
+        }
+        res.status(200).json({
+            message: "Get folder successful",
+            folder: folder
         })
     } catch (err) {
         if (!err.statusCode) {

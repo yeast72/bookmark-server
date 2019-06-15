@@ -1,33 +1,6 @@
 const Bookmark = require('../model/bookmark')
 const User = require('../model/user')
 
-exports.getFolders = async (req, res, next) => {
-    const userId = '5ce14afa29d5fc35e4414849'
-    try {
-        const userFolders = await User.findById(userId).populate({
-            path: 'folders',
-            populate: {
-                path: 'Bookmarks'
-            }
-        })
-
-        const bookmamark = await userFolders.populate('folders.bookmarks')
-
-        const a = await User.findById(userId)
-        res.status(200).json({
-            message: 'Fetched folders',
-            folders: userFolders.folders,
-            // Bookmamark: Bookmamark,
-            // a: a
-        })
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500
-        }
-        next(err)
-    }
-}
-
 exports.getBookmarks = async (req, res, next) => {
     try {
         const bookmarks = await Bookmark.find().sort({

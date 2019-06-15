@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const Folder = require('./folder')
+
 const UserSchema = new Schema({
     name: {
         type: String,
@@ -14,11 +16,11 @@ const UserSchema = new Schema({
         type: String,
         required: false
     },
-    folders: [{
+    rootFolder: {
         type: Schema.Types.ObjectId,
-        ref: 'Folder',
-        // autopopulate: true
-    }]
+        ref: 'folder',
+        required: false
+    }
 }, {
     timestamps: true
 })

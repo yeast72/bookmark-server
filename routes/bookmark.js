@@ -6,8 +6,6 @@ const bookmarkController = require('../controller/bookmark')
 
 router.get('/bookmarks', bookmarkController.getBookmarks)
 
-router.get('/', bookmarkController.getFolders)
-
 router.post('/bookmark', bookmarkController.createBookmark)
 
 router.put('/bookmark/:bookmarkId', bookmarkController.updateBookmark)
