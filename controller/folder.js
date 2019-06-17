@@ -1,4 +1,5 @@
 const Folder = require('../model/folder')
+const Bookmark = require('../model/bookmark')
 
 exports.createFolder = async (req, res, next) => {
     const name = req.body.folder.name
@@ -27,7 +28,7 @@ exports.updateFolder = async (req, res, next) => {
             throw error
         }
         folder.name = newFolder.name
-        folder.bookmarks = newFolder.bookmarks
+        folder.bookmarksId = newFolder.bookmarksId
         folder.childFolderId = newFolder.childFolderId
         const updateFol = await folder.save()
         res.status(200).json({
@@ -99,6 +100,21 @@ exports.deleteFolder = async (req, res, next) => {
             error.statusCode = 404
             throw error
         }
+        const parentFolder = await Folder.findOne({
+            childFolderId: folderId
+        })
+        await parentFolder.removeFolder(folderId)
+        folder.bookmarksId.forEach(id => {
+            Bookmark.findById(id)
+                .then(result => {
+                    return Bookmark.findByIdAndRemove(result._id)
+                }).then(result => {
+                    console.log(`Remove ${result.title}`)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
         await Folder.findByIdAndRemove(folderId)
         res.status(200).json({
             message: 'Delete folder.'

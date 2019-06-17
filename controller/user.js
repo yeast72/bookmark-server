@@ -1,11 +1,19 @@
 const User = require('../model/user')
 const Folder = require('../model/folder')
 
-exports.getLogin = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
+    const username = req.params.username
     try {
-        const user = await User.findById('5ce11b1f280a720f7c9243a9')
+        const user = await User.find({
+            username: username
+        })
+        if (!user) {
+            const err = new Error("Could not find user")
+            err.statusCode = 401
+            throw err
+        }
         res.status(200).json({
-            message: 'Login Successful',
+            message: 'Get user successful',
             user: user
         })
     } catch (err) {
@@ -24,7 +32,7 @@ exports.createNewUser = async (req, res, next) => {
         }).save()
         const user = new User({
             name: name,
-            rootFolder: folder
+            rootFolderId: folder
         })
 
         const respone = await user.save()

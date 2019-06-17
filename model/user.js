@@ -3,8 +3,8 @@ const Schema = mongoose.Schema
 
 const Folder = require('./folder')
 
-const UserSchema = new Schema({
-    name: {
+const userSchema = new Schema({
+    username: {
         type: String,
         required: true
     },
@@ -16,7 +16,7 @@ const UserSchema = new Schema({
         type: String,
         required: false
     },
-    rootFolder: {
+    rootFolderId: {
         type: Schema.Types.ObjectId,
         ref: 'folder',
         required: false
@@ -26,4 +26,4 @@ const UserSchema = new Schema({
 })
 // UserSchema.plugin(require('mongoose-autopopulate'));
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model('User', userSchema)

@@ -1,4 +1,5 @@
 const Bookmark = require('../model/bookmark')
+const Folder = require('../model/folder')
 const User = require('../model/user')
 
 exports.getBookmarks = async (req, res, next) => {
@@ -18,6 +19,27 @@ exports.getBookmarks = async (req, res, next) => {
     }
 }
 
+exports.getBookmark = async (req, res, next) => {
+    const bookmarkId = req.params.bookmarkId
+    try {
+        const bookmark = await Bookmark.findById(bookmarkId)
+
+        if (!bookmark) {
+            const error = new Error('Could not find Bookmark')
+            error.statusCode = 404
+            throw error
+        }
+        res.status(200).json({
+            message: 'Get bookmark',
+            bookmark: bookmark,
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500
+        }
+        next(err)
+    }
+}
 
 exports.createBookmark = async (req, res, next) => {
     const title = req.body.bookmark.title
@@ -25,11 +47,10 @@ exports.createBookmark = async (req, res, next) => {
     const bookmark = new Bookmark({
         title: title,
         url: url,
-        completed: false
     })
     try {
         const newBookmark = await bookmark.save()
-        res.status(201).json({
+        res.status(200).json({
             message: 'Bookmark created successfully!',
             bookmark: newBookmark,
         })
@@ -77,8 +98,14 @@ exports.deleteBookmark = async (req, res, next) => {
             error.statusCode = 404
             throw error
         }
+        const folder = await Folder.findOne({
+            bookmarksId: bookmarkId
+        })
+        const newBookmarksId = folder.bookmarksId.filter(id => id.toString() !== bookmarkId.toString())
+        folder.bookmarksId = newBookmarksId
+        await folder.save()
         await Bookmark.findByIdAndRemove(bookmarkId)
-        return res.status(200).json({
+        return res.status(201).json({
             message: 'Delete Bookmark.'
         })
     } catch (err) {

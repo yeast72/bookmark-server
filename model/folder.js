@@ -1,15 +1,14 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const FolderSchema = new Schema({
+const folderSchema = new Schema({
     name: {
         type: String,
         required: true
     },
-    bookmarks: [{
+    bookmarksId: [{
         type: Schema.Types.ObjectId,
         ref: 'Bookmark',
-        // autopopulate: true
     }],
     childFolderId: [{
         type: Schema.Types.ObjectId,
@@ -18,6 +17,13 @@ const FolderSchema = new Schema({
 }, {
     timestamps: true
 })
-// FolderSchema.plugin(require('mongoose-autopopulate'))
 
-module.exports = mongoose.model('Folder', FolderSchema)
+folderSchema.methods.removeFolder = function (folderId) {
+    const updateChildFolderId = this.childFolderId.filter(id => {
+        return id.toString() !== folderId.toString()
+    });
+    this.childFolderId = updateChildFolderId
+    return this.save()
+}
+
+module.exports = mongoose.model('Folder', folderSchema)
