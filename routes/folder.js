@@ -12,12 +12,12 @@ router.get('/folders', folderController.getFolders)
 router.get('/folder/:folderId', folderController.getFolder)
 
 router.post('/folder', [
-    check('folder').not().isEmpty().isJSON(),
+    check('folder').not().isEmpty(),
     check('folder.name').not().isEmpty().isString()
 ], folderController.createFolder)
 
 router.put('/folder/:folderId', [
-    check('folder.name').not().isEmpty().isString().escape()
+    check('folder.name').not().isEmpty().isString()
 ], folderController.updateFolder)
 
 router.delete('/folder/:folderId', folderController.deleteFolder)

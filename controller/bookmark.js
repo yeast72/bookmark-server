@@ -76,7 +76,6 @@ exports.updateBookmark = async (req, res, next) => {
     const bookmarkId = req.params.bookmarkId
     try {
         const newBookmark = req.body.bookmark
-
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(402).json({
