@@ -1,4 +1,7 @@
 const express = require('express')
+const {
+    check
+} = require('express-validator/check');
 
 const router = express.Router()
 
@@ -6,13 +9,16 @@ const folderController = require('../controller/folder')
 
 router.get('/folders', folderController.getFolders)
 
-// router.get('/rootfolder', folderController.getRootFolder)
-
 router.get('/folder/:folderId', folderController.getFolder)
 
-router.post('/folder', folderController.createFolder)
+router.post('/folder', [
+    check('folder').not().isEmpty().isJSON(),
+    check('folder.name').not().isEmpty().isString()
+], folderController.createFolder)
 
-router.put('/folder/:folderId', folderController.updateFolder)
+router.put('/folder/:folderId', [
+    check('folder.name').not().isEmpty().isString().escape()
+], folderController.updateFolder)
 
 router.delete('/folder/:folderId', folderController.deleteFolder)
 

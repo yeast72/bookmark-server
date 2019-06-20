@@ -1,12 +1,23 @@
+const {
+    validationResult
+} = require('express-validator/check');
+
 const Folder = require('../model/folder')
 const Bookmark = require('../model/bookmark')
 
 exports.createFolder = async (req, res, next) => {
-    const name = req.body.folder.name
-    const folder = new Folder({
-        name: name
-    })
     try {
+        const name = req.body.folder.name
+        const folder = new Folder({
+            name: name
+        })
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(402).json({
+                errors: errors.array()
+            })
+        }
         const newFolder = await folder.save()
         res.status(201).json({
             message: "create new folder successful",
@@ -19,8 +30,14 @@ exports.createFolder = async (req, res, next) => {
 
 exports.updateFolder = async (req, res, next) => {
     const folderId = req.params.folderId
-    const newFolder = req.body.folder
     try {
+        const newFolder = req.body.folder
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(402).json({
+                errors: errors.array()
+            })
+        }
         const folder = await Folder.findById(folderId)
         if (!folder) {
             const error = new Error('Could not find folder')

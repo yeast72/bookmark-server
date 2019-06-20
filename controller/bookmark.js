@@ -1,3 +1,7 @@
+const {
+    validationResult
+} = require('express-validator/check');
+
 const Bookmark = require('../model/bookmark')
 const Folder = require('../model/folder')
 const User = require('../model/user')
@@ -42,13 +46,19 @@ exports.getBookmark = async (req, res, next) => {
 }
 
 exports.createBookmark = async (req, res, next) => {
-    const title = req.body.bookmark.title
-    const url = req.body.bookmark.url
-    const bookmark = new Bookmark({
-        title: title,
-        url: url,
-    })
     try {
+        const title = req.body.bookmark.title
+        const url = req.body.bookmark.url
+        const bookmark = new Bookmark({
+            title: title,
+            url: url,
+        })
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(402).json({
+                errors: errors.array()
+            })
+        }
         const newBookmark = await bookmark.save()
         res.status(200).json({
             message: 'Bookmark created successfully!',
@@ -64,8 +74,16 @@ exports.createBookmark = async (req, res, next) => {
 
 exports.updateBookmark = async (req, res, next) => {
     const bookmarkId = req.params.bookmarkId
-    const newBookmark = req.body.bookmark
     try {
+        const newBookmark = req.body.bookmark
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(402).json({
+                errors: errors.array()
+            })
+        }
+
         const bookmark = await Bookmark.findById(bookmarkId)
         if (!bookmark) {
             const error = new Error('Could not find Bookmark')
